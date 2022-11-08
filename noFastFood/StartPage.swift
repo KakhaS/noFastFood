@@ -12,20 +12,19 @@ class StartPage: UIViewController {
     var dateSelected = "" {
         didSet {
             dateSelected = "\( datePicker.date ) "
-//            print(dateSelected)
+            topText.text = "Your date is saved."
         }
     }
     
-    
     private let topText: UILabel = {
-        let text = UILabel()
-        text.text = "Select the date when you give up on Fast Food"
-        text.textColor = .lightGray
-        text.textAlignment = .center
-        text.numberOfLines = 2
-        
-        return text
-    }()
+    let text = UILabel()
+    text.text = "Select the date when you give up on Fast Food"
+    text.textColor = .lightGray
+    text.textAlignment = .center
+    text.numberOfLines = 2
+    
+    return text
+}()
     private let dateButton: UIButton = {
         let dateButton = UIButton()
         dateButton.setTitle("Select Date", for: .normal)
@@ -38,11 +37,12 @@ class StartPage: UIViewController {
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
         picker.date = Date()
+        picker.datePickerMode = .date
         picker.locale = .current
         picker.preferredDatePickerStyle = .inline
         picker.tintColor = .gray
         picker.backgroundColor = .lightGray
-       
+        picker.addTarget(self, action: #selector(dateChanged), for: .valueChanged)
         return picker
     }()
     
@@ -59,27 +59,16 @@ class StartPage: UIViewController {
     @objc func tappedPicker() {
         view.addSubview(datePicker)
         datePicker.anchor(top: dateButton.bottomAnchor, leading: dateButton.leadingAnchor, trailing: dateButton.trailingAnchor, padding: .init(top: 40, left: 10, bottom: 0, right: 10))
+        datePicker.isHidden = false
     }
     
-    func datePickerValueChanged(_ sender: UIDatePicker){
-            
-            // Create date formatter
-            let dateFormatter: DateFormatter = DateFormatter()
-            
-            // Set date format
-            dateFormatter.dateFormat = "MM/dd/yyyy hh:mm a"
-            
-            // Apply date format
-            let selectedDate: String = dateFormatter.string(from: sender.date)
-        dateSelected = selectedDate
-        
-            print("Selected value \(dateSelected)")
-        }
-    
-    func dateChanged(sender: UIDatePicker) {
+ @objc func dateChanged(sender: UIDatePicker) {
         let components = Calendar.current.dateComponents([.year, .month, .day], from: sender.date)
         if let day = components.day, let month = components.month, let year = components.year {
-            print("\(day) \(month) \(year)")
+            dateSelected = ("\(day) \(month) \(year)")
+            print(dateSelected)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.19, execute: {self.datePicker.isHidden = true})
+            
         }
     }
         
