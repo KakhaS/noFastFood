@@ -9,12 +9,7 @@ import UIKit
 
 class StartPage: UIViewController {
     
-    var dateSelected = "" {
-        didSet {
-            dateSelected = "\( datePicker.date ) "
-            topText.text = "Your date is saved."
-        }
-    }
+
     
     private let topText: UILabel = {
     let text = UILabel()
@@ -58,6 +53,7 @@ class StartPage: UIViewController {
     }
     @objc func tappedPicker() {
         view.addSubview(datePicker)
+        
         datePicker.anchor(top: dateButton.bottomAnchor, leading: dateButton.leadingAnchor, trailing: dateButton.trailingAnchor, padding: .init(top: 40, left: 10, bottom: 0, right: 10))
         datePicker.isHidden = false
     }
@@ -65,8 +61,8 @@ class StartPage: UIViewController {
  @objc func dateChanged(sender: UIDatePicker) {
         let components = Calendar.current.dateComponents([.year, .month, .day], from: sender.date)
         if let day = components.day, let month = components.month, let year = components.year {
-            dateSelected = ("\(day) \(month) \(year)")
-            print(dateSelected)
+            topText.text = "Your Selected date is \(day) - \(month) - \(year)"
+            
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.19, execute: {self.datePicker.isHidden = true})
             
         }
